@@ -88,10 +88,10 @@ def IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar
 
     for i in range(N):
         os.system('cls')
-        ElemenNama = str(input('Nama Pelanggan Ke-{}   : '.format(i + 1)))
+        ElemenNama = str(input('Nama Pelanggan Ke-{}          : '.format(i + 1)))
         Nama[i] = ElemenNama.upper()
         
-        ElemenAlamat = str(input('Alamat Pelanggan Ke-{} : '.format(i + 1)))
+        ElemenAlamat = str(input('Alamat Pelanggan Ke-{}        : '.format(i + 1)))
         Alamat[i] = ElemenAlamat
         
         if i + 1 < 10:
@@ -101,10 +101,10 @@ def IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar
         
         KodePelanggan[i] = ElemenKode
         
-        ElemenJumlah = int(input('Jumlah (Kg)  Ke-{}     : '.format(i + 1)))
+        ElemenJumlah = int(input('Jumlah (Kg)  Ke-{}            : '.format(i + 1)))
         Jumlah[i] = ElemenJumlah
         
-        ElemenTipe = str(input('Tipe (Setrika/Biasa)  Ke-{}     : '.format(i + 1)))
+        ElemenTipe = str(input('Tipe (Setrika/Biasa)  Ke-{}   : '.format(i + 1)))
         Tipe[i] = ElemenTipe.upper()
         
         Harga[i] = HargaBayar(Tipe[i],Jumlah[i])
@@ -121,10 +121,10 @@ def TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBa
     
     for i in range(N, N + JumlahBaru):
         os.system('cls')
-        ElemenNama = str(input(f'Nama Pelanggan Ke-{i+1}   : '))
+        ElemenNama = str(input(f'Nama Pelanggan Ke-{i+1}      : '))
         Nama[i] = ElemenNama.upper()
         
-        ElemenAlamat = str(input(f'Alamat Pelanggan Ke-{i+1} : '))
+        ElemenAlamat = str(input(f'Alamat Pelanggan Ke-{i+1}    : '))
         Alamat[i] = ElemenAlamat
         
         if i + 1 < 10:
@@ -134,10 +134,10 @@ def TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBa
         
         KodePelanggan[i] = ElemenKode
         
-        ElemenJumlah = int(input('Jumlah (Kg)  Ke-{}     : '.format(i + 1)))
+        ElemenJumlah = int(input('Jumlah (Kg)  Ke-{}            : '.format(i + 1)))
         Jumlah[i] = ElemenJumlah
         
-        ElemenTipe = str(input('Tipe (Setrika/Biasa)  Ke-{}     : '.format(i + 1)))
+        ElemenTipe = str(input('Tipe (Setrika/Biasa)  Ke-{}   : '.format(i + 1)))
         Tipe[i] = ElemenTipe.upper()
         
         Harga[i] = HargaBayar(Tipe[i],Jumlah[i])
