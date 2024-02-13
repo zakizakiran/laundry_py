@@ -10,11 +10,13 @@ MAKSPELANGGAN = 80
 #subrutin menu pilihan
 def Menu(Pilih):
     print('==============================')
-    print('         MENU LAUNDRY         ')
+    print('          MENU UTAMA          ')
     print('==============================')
     print('1. Pengisian Data Pelanggan')
     print('2. Tambah Data Pelanggan')
     print('3. Tampilkan Data Pelanggan')
+    print('4. Hapus Data Pelanggan')
+    print('5. Penghancuran Data Pelanggan')
     print('0. Keluar')
     print()
     Pilih = int(input('Pilihan Anda? '))
@@ -39,16 +41,43 @@ def MenuTampilan(PilihTampilan):
     return PilihTampilan
 
 
-#subrutin menentukan harga bayar berdasarkan tipe
+#subrutin menu hapus
+def MenuHapus(PilihHapus):
+    print('=================================================')
+    print('                  MENU HAPUS                     ')
+    print('=================================================')
+    print('1. Hapus Depan Data Pelanggan')
+    print('2. Hapus Tertentu Data Pelanggan')
+    print('0. Kembali ke Menu Utama')
+    print()
+    PilihHapus = int(input('Pilihan Anda? '))
+    
+    return PilihHapus  
+
+
+# subrutin menentukan harga bayar berdasarkan tipe
 def HargaBayar(Tipe, Jumlah):
     if (Tipe == "BIASA"):
        return Jumlah * 6000
     elif (Tipe == "SETRIKA"):
       return Jumlah * 8000
+    else:
+        print('Tipe tidak valid!')
         
+        
+# subrutin menghitung total bayar    
+def HitungTotalBayar(Jumlah, Harga):
+    if (Jumlah >= 5):
+        if (Jumlah >= 8):
+            return Harga - (Harga * 0.1)
+        else:
+            return Harga - (Harga * 0.05)
+    else:
+        return Harga
+    
         
 # subrutin isi data pelanggan
-def IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe):
+def IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
     N = int(input('Masukan jumlah pelanggan : '))
     if N > MAKSPELANGGAN:
         print('Jumlah Pelanggan Melebihi Batas Maksimal!..tekan enter untuk ulangi')
@@ -80,25 +109,13 @@ def IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe):
         
         Harga[i] = HargaBayar(Tipe[i],Jumlah[i])
         
-        DataPelangganKeFile(Nama[i], Alamat[i], KodePelanggan[i], Jumlah[i], Harga[i])
-        
-    return N
-        
-        
-# subrutin memasukkan data ke dalam file txt
-def DataPelangganKeFile(Nama, Alamat, KodePelanggan, Jumlah, Harga):
-    f = open('DataRiwayatPelanggan.txt', 'a')
-    f.write(f'Nama Pelanggan    : {Nama}' + '\n')
-    f.write(f'Alamat Pelanggan  : {Alamat}' + '\n')
-    f.write(f'Kode Pelanggan    : {KodePelanggan}' + '\n')
-    f.write(f'Jumlah (Kg)       : {Jumlah}' + '\n')
-    f.write(f'Harga             : {Harga:,.0f} '+ '\n')
-    f.write('=================================================\n')
-    f.close()
+        TotalBayar[i] = HitungTotalBayar(Jumlah[i], Harga[i])
+                
+    return N        
     
 
 # subrutin tambah pelanggan
-def TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Tipe):
+def TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
     
     os.system('cls')
     
@@ -124,22 +141,65 @@ def TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Tipe):
         Tipe[i] = ElemenTipe.upper()
         
         Harga[i] = HargaBayar(Tipe[i],Jumlah[i])
+
+        TotalBayar[i] = HitungTotalBayar(Jumlah[i], Harga[i])
         
-        DataPelangganKeFile(Nama[i], Alamat[i], KodePelanggan[i], Jumlah[i], Harga[i])
 
+# subrutin menghapus pelanggan berdasarkan kode pelanggan
+def HapusPelangganTertentu(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar, PosisiHapus):
+    HapusPelanggan = KodePelanggan[PosisiHapus]
+    for i in range(PosisiHapus+1,N):
+        Nama[i-1] = Nama[i]
+        Alamat[i-1] = Alamat[i]
+        Jumlah[i-1] = Jumlah[i]
+        Harga[i-1] = Harga[i]
+        Tipe[i-1] = Tipe[i]
+        TotalBayar[i-1] = TotalBayar[i]
 
-# subrutin total pelanggan
-def TotalPelanggan(N, KodePelanggan):
-    TotalPelanggan = 0
-    for i in range(N):
-        if KodePelanggan[i] != '/':
-            TotalPelanggan = TotalPelanggan + 1
+    Nama[N-1] = '/'
+    Alamat[N-1] = '/'
+    Jumlah[N-1] = 0
+    Harga[N-1] = 0
+    Tipe[N-1] = '/'
+    TotalBayar[N-1] = 0
     
-    return TotalPelanggan
+    return HapusPelanggan
+
+
+# subrutin hapus depan data pelanggan 
+def HapusPelangganDepan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
+    HapusPelanggan = KodePelanggan[0]
+    for i in range(1, N):
+        Nama[i-1] = Nama[i]
+        Alamat[i-1] = Alamat[i]
+        Jumlah[i-1] = Jumlah[i]
+        Harga[i-1] = Harga[i]
+        Tipe[i-1] = Tipe[i]
+        
+    Nama[N-1] = '/'
+    Alamat[N-1] = '/'
+    Jumlah[N-1] = 0
+    Harga[N-1] = 0
+    Tipe[N-1] = '/' 
+    TotalBayar[N-1] = 0
+    
+    return HapusPelanggan
+
+
+# subrutin penghancuran data pelanggan
+def PenghancuranDataPelanggan(Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
+    for i in range(MAKSPELANGGAN):
+        Nama[i] = '/'
+        Alamat[i] = '/'
+        KodePelanggan[i] = '/'
+        Jumlah[i] = 0
+        Harga[i] = 0
+        Tipe[i] = '/'
+        TotalBayar[i] = 0
 
 
 # subrutin mengurutkan jumlah secara ascending dengan bubble short
-def UrutJumlahAsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga):
+def UrutJumlahAsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
     for i in range(N-1):
         j = N-1
         while (j >= i+1):
@@ -169,11 +229,21 @@ def UrutJumlahAsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga):
                     Harga[j] = Harga[j-1]
                     Harga[j-1] = Temp
                     
+                    # Tipe bertukar
+                    Temp = Tipe[j]
+                    Tipe[j] = Tipe[j-1]
+                    Tipe[j-1] = Temp
+                    
+                    # TotalBayar bertukar
+                    Temp = TotalBayar[j]
+                    TotalBayar[j] = TotalBayar[j-1]
+                    TotalBayar[j-1] = Temp
+                    
                 j = j - 1
 
 
 # subrutin mengurutkan jumlah secara descending dengan minimum sort
-def UrutJumlahDsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga):
+def UrutJumlahDsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
     for i in range(N-1):
         Min = i
         for j in range(1, N):
@@ -205,22 +275,34 @@ def UrutJumlahDsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga):
                 Harga[i] = Harga[Min]
                 Harga[Min] = Temp
                 
+                # Tipe bertukar
+                Temp = Tipe[i]
+                Tipe[i] = Tipe[Min]
+                Tipe[Min] = Temp
+                
+                # TotalBayar bertukar
+                Temp = TotalBayar[i]
+                TotalBayar[i] = TotalBayar[Min]
+                TotalBayar[Min] = Temp
 
 
 # subrutin pencarian data pelanggan berdasarkan kode pelanggan dengan sentinel
-def CariKodePelanggan(N, KodePelanggan, Nama, Alamat, Jumlah, Harga, CariKode):
+def CariKodePelanggan(N, KodePelanggan, Nama, Alamat, Jumlah, Harga, Tipe, TotalBayar, CariKode):
     i = 0
     KodePelanggan[N] = KodePelanggan
 
     while KodePelanggan[i] != CariKode:
         i = i + 1
+    
     if i < N:
         print(f'Data Ditemukan pada indeks ke-{i+1}')
         print()
         print(f'Kode Pelanggan    : {KodePelanggan[i]}')
         print(f'Nama Pelanggan    : {Nama[i]}')
         print(f'Jumlah (Kg)       : {Jumlah[i]}')
-        print(f'Harga             : {Harga[i]}')
+        print(f'Tipe              : {Tipe[i]}')
+        print(f'Harga             : Rp {Harga[i]:,}')
+        print(f'Total Bayar       : Rp {TotalBayar[i]:,.0f}')
         print(f'Alamat Pelanggan  : {Alamat[i]}')
         return i
     else:
@@ -228,9 +310,8 @@ def CariKodePelanggan(N, KodePelanggan, Nama, Alamat, Jumlah, Harga, CariKode):
         return -1
 
 
-
 # subrutin pencarian data pelanggan berdasarkan nama pelanggan
-def CariNamaPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, CariNama):
+def CariNamaPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar, CariNama):
     print('Hasil Pencarian:')
     print()
     Ketemu = False
@@ -239,26 +320,48 @@ def CariNamaPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, CariNama):
             print(f'Kode Pelanggan    : {KodePelanggan[i]}')
             print(f'Nama Pelanggan    : {Nama[i]}')
             print(f'Jumlah (Kg)       : {Jumlah[i]}')
-            print(f'Harga             : {Harga[i]}')
+            print(f'Tipe              : {Tipe[i]}')
+            print(f'Harga             : Rp {Harga[i]:,}')
+            print(f'Total Bayar       : Rp {TotalBayar[i]:,.0f}')
             print(f'Alamat Pelanggan  : {Alamat[i]}')
             print()
             Ketemu = True
     if not Ketemu:
         print('Data tidak ditemukan.')
+        
+        
+# subrutin total pelanggan
+def TotalPelanggan(N, KodePelanggan):
+    TotalPelanggan = 0
+    for i in range(N):
+        if KodePelanggan[i] != '/':
+            TotalPelanggan = TotalPelanggan + 1
+    
+    return TotalPelanggan
 
 
 # subrutin tampil pelanggan
-def TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga):
-    print('=========================================================================================================================')
-    print('                                             DAFTAR DATA PELANGGAN                                                       ')
-    print('=========================================================================================================================')
-    print('-------------------------------------------------------------------------------------------------------------------------')
-    print('| No |   Kode Pelanggan  | Nama Pelanggan       | Jumlah (Kg) |       Harga       |                Alamat               |')
-    print('-------------------------------------------------------------------------------------------------------------------------')
+def TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar):
+    print('==================================================================================================================================================================')
+    print('                                                             DAFTAR DATA PELANGGAN                                                                                ')
+    print('==================================================================================================================================================================')
+    print('------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+    print('| No |   Kode Pelanggan  | Nama Pelanggan       | Jumlah (Kg) | Tipe    |        Harga       | Diskon |  Total Bayar       |                Alamat               |')
+    print('------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+   
     for i in range(N) :
+        if (Jumlah[i] >= 5):
+            if (Jumlah[i] >= 8):
+                Diskon = 0.1
+            else:
+                Diskon = 0.05
+        else:
+            Diskon = 0
         HargaBayar = "{:,.0f}".format(Harga[i])
-        print(f'| {i+1:<2} |     {KodePelanggan[i]:<8}      | {Nama[i]:<20} |    {Jumlah[i]:<2} Kg    |  Rp. {HargaBayar:<12} | {Alamat[i]:<35} |')
-    print('-------------------------------------------------------------------------------------------------------------------------')
+        Total = "{:,.0f}".format(TotalBayar[i])
+        PersentaseDiskon = "{:.0%}".format(Diskon)
+        print(f'| {i+1:<2} |     {KodePelanggan[i]:<8}      | {Nama[i]:<20} |    {Jumlah[i]:<2} Kg    | {Tipe[i]:<7} |  Rp {HargaBayar:<12}   | {PersentaseDiskon:<5}  |  Rp  {Total:<12}  | {Alamat[i]:<35} |')
+    print('------------------------------------------------------------------------------------------------------------------------------------------------------------------')
     print()
     print(f'Total Pelanggan : {TotalPelanggan(N, KodePelanggan)}')
     
@@ -271,6 +374,7 @@ KodePelanggan = ['/'] * MAKSPELANGGAN
 Tipe = ['/'] * MAKSPELANGGAN
 Jumlah = [0] * MAKSPELANGGAN
 Harga = [0] * MAKSPELANGGAN
+TotalBayar = [0.0] * MAKSPELANGGAN
 
 N = 0
 Pilih = 0
@@ -279,13 +383,17 @@ while Pilih != 0:
     match Pilih:
         case 1:
             os.system('cls')
-            N = IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe)
+            print('<< Pengisian Data Pelanggan >>')
+            print()
+            N = IsiPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
             print()
             os.system('pause')
         case 2:
             os.system('cls')
+            print('<< Penambahan Data Pelanggan >>')
+            print()
             JumlahBaru = int(input('Masukkan jumlah pelanggan baru: '))
-            TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Tipe)
+            TambahPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
             N = N + JumlahBaru
             print()
             os.system('pause')
@@ -298,7 +406,7 @@ while Pilih != 0:
                     case 1:
                         os.system('cls')
                         if N > 0:
-                            TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga)
+                            TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
                         else:
                             print('Data Masih Kosong...')
                         print()
@@ -306,8 +414,9 @@ while Pilih != 0:
                     case 2:
                         os.system('cls')
                         if N > 0:
+                            print('<< Pencarian Data Pelanggan Berdasarkan Kode Pelanggan >>')
                             CariKode = str(input('Masukkan Kode Pelanggan yang dicari: '))
-                            CariKodePelanggan(N, KodePelanggan, Nama, Alamat, Jumlah, Harga, CariKode)
+                            CariKodePelanggan(N, KodePelanggan, Nama, Alamat, Jumlah, Harga, Tipe, TotalBayar, CariKode)
                         else:
                             print('Data Masih Kosong...')
                         print()
@@ -315,8 +424,9 @@ while Pilih != 0:
                     case 3:
                         os.system('cls')
                         if N > 0:
+                            print('<< Pencarian Data Pelanggan Berdasarkan Nama Pelanggan >>')
                             CariNama = str(input('Masukkan Nama Pelanggan yang dicari: ')).upper()
-                            CariNamaPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, CariNama)
+                            CariNamaPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar, CariNama)
                         else:
                             print('Data Masih Kosong...')
                         print()
@@ -324,8 +434,10 @@ while Pilih != 0:
                     case 4:
                         os.system('cls')
                         if N > 0:
-                            UrutJumlahAsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga)
-                            TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga)
+                            print('<< Menampilkan Data Pelanggan Secara Ascending Berdasarkan Jumlah (KG) >>')
+                            print()
+                            UrutJumlahAsc(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
+                            TampilPelanggan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
                         else:
                             print('Data Masih Kosong...')
                         print()
@@ -333,8 +445,10 @@ while Pilih != 0:
                     case 5:
                         os.system('cls')
                         if N > 0:
-                            UrutJumlahDsc(N,Nama,Alamat,KodePelanggan, Jumlah, Harga)
-                            TampilPelanggan(N,Nama,Alamat,KodePelanggan, Jumlah, Harga)
+                            print('<< Menampilkan Data Pelanggan Secara Descending Berdasarkan Jumlah (KG) >>')
+                            print()
+                            UrutJumlahDsc(N,Nama,Alamat,KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
+                            TampilPelanggan(N,Nama,Alamat,KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
                         else:
                             print('Data Masih Kosong...')
                         print()
@@ -347,7 +461,48 @@ while Pilih != 0:
                             
                 os.system('cls')        
                 PilihTampilan = MenuTampilan(PilihTampilan)
-
+        case 4:
+            os.system('cls')
+            PilihHapus = 0
+            PilihHapus = MenuHapus(PilihHapus)
+            while PilihHapus != 0:
+                match PilihHapus:
+                    case 1:
+                        os.system('cls')
+                        print('<< Penghapusan Di Depan >>')
+                        HapusPelanggan = HapusPelangganDepan(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
+                        print(f'Kode pelanggan yang dihapus : {HapusPelanggan}')
+                        N = N - 1
+                        print()
+                        os.system('pause')
+                    case 2:
+                        os.system('cls')
+                        print('<< Penghapusan Data Pelanggan Posisi Tertentu >>')
+                        PosisiHapus = int(input('Indeks yang akan dihapus ada pada posisi : '))
+                        PosisiHapus = PosisiHapus - 1
+                        if (PosisiHapus >= 0) and (PosisiHapus <= N):
+                            print(f'Pelanggan yang dihapus: {Nama[PosisiHapus]} dengan kode {KodePelanggan[PosisiHapus]}')
+                            HapusPelangganTertentu(N, Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar, PosisiHapus)
+                            N = N - 1
+                        else:
+                            print('Posisi penghapusan tidak valid!')
+                                                    
+                        print()
+                        os.system('pause')
+                        
+                os.system('cls')        
+                PilihHapus = MenuHapus(PilihHapus)
+        case 5:
+            os.system('cls')
+            print('<< Penghancuran Data Pelanggan >>')
+            Konfirmasi = str(input('Apakah Anda yakin akan menghancurkan semua data pelanggan? (Y/T) : '))
+            if Konfirmasi == 'Y' or Konfirmasi == 'y':
+                os.system('cls')
+                PenghancuranDataPelanggan(Nama, Alamat, KodePelanggan, Jumlah, Harga, Tipe, TotalBayar)
+                N = 0
+                print('Data Pelanggan Telah Dihancurkan...')
+                print()
+            os.system('pause')
         case _:
             os.system('cls')
             print('Nomor menu tidak ada!')
